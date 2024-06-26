@@ -8,6 +8,7 @@ class Loginpage extends StatefulWidget {
 }
 
 class _LoginpageState extends State<Loginpage> {
+  bool _isChecked= false;
   String email="",password="",message="";
   TextEditingController n1 =new TextEditingController();
   TextEditingController n2 =new TextEditingController();
@@ -34,7 +35,7 @@ class _LoginpageState extends State<Loginpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEC6813),
+      backgroundColor:Colors.cyan,
       body: ListView(
         children: <Widget>[
           Padding(
@@ -108,14 +109,18 @@ class _LoginpageState extends State<Loginpage> {
                   ],
                 ),
                 Center(
-                  child: TextButton(
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.amber,
-                      ),onPressed: ()
-                  {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPage()));
-                  }, child: Text("Forgot Password",
-                    style: TextStyle(color: Colors.black),)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Checkbox(value: _isChecked, onChanged: (bool? value){
+                        setState(() {
+                          _isChecked= value!;
+                        });
+                      }),
+                      Text("Keep me Loged in",
+                        style: TextStyle(color: Colors.black),),
+                    ],
+                  )
                 ),
                 // Center(
                 //   child: TextButton(

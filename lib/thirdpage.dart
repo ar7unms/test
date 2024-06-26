@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:test_program/model/listmodel.dart';
+import 'package:test_program/model/submodel.dart';
 import 'package:test_program/services/listservice.dart';
-import 'package:test_program/thirdpage.dart';
 
-class FirstPage extends StatefulWidget {
-  const FirstPage({super.key});
+class thirdpage extends StatefulWidget {
+  final String subid;
+  const thirdpage({Key? key, required this.subid}):super(key: key);
 
   @override
-  State<FirstPage> createState() => _FirstPageState();
+  State<thirdpage> createState() => _thirdPageState();
 }
 
-class _FirstPageState extends State<FirstPage> {
-  late Future<List<Data>> data;
+class _thirdPageState extends State<thirdpage> {
+  late Future<List<Sub>> data;
 
   @override
   void initState() {
     super.initState();
-    data = ListApi().listfile();
+    data = ListApi().subcategory(widget.subid);
   }
 
   @override
@@ -26,7 +27,7 @@ class _FirstPageState extends State<FirstPage> {
       appBar: AppBar(backgroundColor: Colors.cyan,
         title:  Center(
           child: Text(
-            'LIST',
+            'SUB CATEGORY',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -62,7 +63,7 @@ class _FirstPageState extends State<FirstPage> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(color: Colors.white,borderRadius:BorderRadius.only(topRight:Radius.circular(20),topLeft:Radius.circular(20))),
-              child: FutureBuilder<List<Data>>(
+              child: FutureBuilder<List<Sub>>(
                 future: data,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -76,28 +77,27 @@ class _FirstPageState extends State<FirstPage> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: (){
-                            print(snapshot.data![index].id);
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>thirdpage(subid: snapshot.data![index].id)));
+
                           },
                           child:
-                              Card(
-                                margin: const EdgeInsets.all(8.0),
-                                child: ListTile(
-                                  title: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(
-                                      "https://coinoneglobal.in/crm/${snapshot.data![index].imgUrlPath}",
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
-                                    ),
-                                  ),
-                                  subtitle: Container(
-                                    decoration:BoxDecoration(color: Colors.cyan,borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10))),
-                                    child: Center(
-                                      child: Text(snapshot.data![index].name,style: TextStyle(fontSize: 15),),
-                                    ),
-                                  ),
+                          Card(
+                            margin: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              title: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  "https://coinoneglobal.in/crm/${snapshot.data![index].imgUrlPath}",
+                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
                                 ),
                               ),
+                              subtitle: Container(
+                                decoration:BoxDecoration(color: Colors.cyan,borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10))),
+                                child: Center(
+                                  child: Text(snapshot.data![index].name,style: TextStyle(fontSize: 15),),
+                                ),
+                              ),
+                            ),
+                          ),
 
                         );
                       },
