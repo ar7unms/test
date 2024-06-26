@@ -1,28 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:test_program/model/listmodel.dart';
+import 'package:test_program/services/listservice.dart';
 
-class firstpage extends StatefulWidget {
-  const firstpage({super.key});
+class FirstPage extends StatefulWidget {
+  const FirstPage({super.key});
 
   @override
-  State<firstpage> createState() => _firstpageState();
+  State<FirstPage> createState() => _FirstPageState();
 }
 
-class _firstpageState extends State<firstpage> {
+class _FirstPageState extends State<FirstPage> {
+  late Future<List<Data>> data;
+
+  @override
+  void initState() {
+    super.initState();
+    data = ListApi().listfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'LIST',
-          style: TextStyle(color: Colors.orange),
+      backgroundColor: Colors.cyan,
+      appBar: AppBar(backgroundColor: Colors.cyan,
+        title:  Center(
+          child: Text(
+            'LIST',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
         actions: [
-          IconButton(onPressed:(){
-            Navigator.pop(context);
-          }, icon: Icon(
-           Icons.logout,
-           color: Colors.orange,
-          ))
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
       body: Column(
@@ -31,43 +47,64 @@ class _firstpageState extends State<firstpage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
+                filled: true,
+                fillColor:Colors.cyanAccent,
                 hintText: 'Search for Names',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
             ),
           ),
+          SizedBox(height: 20,),
           Expanded(
-            child: FutureBuilder<List<Food>>(
-              future: data,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  var filteredData = snapshot.data!
-                      .where((food) => food.type.toLowerCase() == label1.toLowerCase())
-                      .toList();
-                  print(filteredData);
-                  if (filteredData.isEmpty) {
-                    return Center(child: Text('No Food for this category'));
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white,borderRadius:BorderRadius.only(topRight:Radius.circular(20),topLeft:Radius.circular(20))),
+              child: FutureBuilder<List<Data>>(
+                future: data,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: (){
+                            
+                          },
+                          child:
+                              Card(
+                                margin: const EdgeInsets.all(8.0),
+                                child: ListTile(
+                                  title: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Image.network(
+                                      "https://coinoneglobal.in/crm/${snapshot.data![index].imgUrlPath}",
+                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+                                    ),
+                                  ),
+                                  subtitle: Container(
+                                    decoration:BoxDecoration(color: Colors.cyan,borderRadius: BorderRadius.only(bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10))),
+                                    child: Center(
+                                      child: Text(snapshot.data![index].name,style: TextStyle(fontSize: 15),),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No Data Available'));
                   }
-                  return ListView.builder(
-                    itemCount: filteredData.length,
-                    itemBuilder: (context, index) {
-                      return FoodCard(
-                        food: filteredData[index],
-                        addBookedFood: addBookedFood, // Pass the addBookedFood method to FoodCard
-                      );
-                    },
-                  );
-                } else {
-                  return Center(child: Text('No Food available'));
-                }
-              },
+                },
+              ),
             ),
           ),
         ],

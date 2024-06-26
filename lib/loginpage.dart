@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_program/firstpage.dart';
 class Loginpage extends StatefulWidget {
   const Loginpage({super.key});
 
@@ -75,7 +76,9 @@ class _LoginpageState extends State<Loginpage> {
                 ),
                 SizedBox(height: 20.0),
                 ElevatedButton(
-                  onPressed:(){},
+                  onPressed:(){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>FirstPage()));
+                  },
                   child: Text(
                     'LOGIN',
                     style: TextStyle(
